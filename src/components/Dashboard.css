@@ -65,6 +65,8 @@
 .dashboard-content {
   display: flex;
   flex-direction: column;
+  position: relative;
+  min-height: 400px;
 }
 
 .dashboard-section {
@@ -72,6 +74,9 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .dashboard-section h2 {
@@ -97,7 +102,7 @@
 
 button {
   padding: 12px 24px;
-  background-color: #4A90E2;
+  background-color: crimson;
   color: white;
   border: none;
   border-radius: 4px;
@@ -107,7 +112,8 @@ button {
 }
 
 button:hover {
-  background-color: #50E3C2;
+  background-color: white;
+  color: #333;
   transform: translateY(-2px);
 }
 
@@ -147,4 +153,37 @@ button:active {
 
 .hidden {
   display: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }

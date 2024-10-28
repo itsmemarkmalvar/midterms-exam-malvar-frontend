@@ -175,3 +175,56 @@ button:hover {
 .modal-close-button:hover {
   color: #333;
 }
+
+.book-table td {
+  font-size: 14px;
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+.book-table th {
+  padding: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.book-table td:last-child {
+  width: 200px;
+  text-align: center;
+}
+
+.book-table button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 80px;
+  margin: 0 5px;
+}
+
+/* Edit button specific styles */
+.book-table button.edit-button {
+  background-color: #4CAF50;  /* Green color */
+  color: white;
+}
+
+.book-table button.edit-button:hover {
+  background-color: #45a049;  /* Darker green on hover */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Delete button specific styles */
+.book-table button.delete-button {
+  background-color: #dc3545;  /* Red color */
+  color: white;
+}
+
+.book-table button.delete-button:hover {
+  background-color: #c82333;  /* Darker red on hover */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

@@ -11,6 +11,11 @@ const EditBookList = ({ onSelectBook }) => {
     setBooks(mockBooks);
   }, []);
 
+  const handleDelete = (id) => {
+    // TODO: Implement delete functionality
+    console.log('Delete book with id:', id);
+  };
+
   return (
     <table className="book-table">
       <thead>
@@ -20,19 +25,32 @@ const EditBookList = ({ onSelectBook }) => {
           <th>Published Year</th>
           <th>Genre</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th style={{ width: '200px' }}>Actions</th>
         </tr>
       </thead>
       <tbody>
         {books.map((book) => (
           <tr key={book.id}>
-            <td>{book.title}</td>
-            <td>{book.author}</td>
-            <td>{book.publishedYear}</td>
-            <td>{book.genre}</td>
-            <td>{book.description}</td>
+            <td style={{ fontSize: '14px' }}>{book.title}</td>
+            <td style={{ fontSize: '14px' }}>{book.author}</td>
+            <td style={{ fontSize: '14px' }}>{book.publishedYear}</td>
+            <td style={{ fontSize: '14px' }}>{book.genre}</td>
+            <td style={{ fontSize: '14px' }}>{book.description}</td>
             <td>
-              <button onClick={() => onSelectBook(book.id)}>Edit</button>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button 
+                  onClick={() => onSelectBook(book.id)}
+                  className="edit-button"
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => handleDelete(book.id)}
+                  className="delete-button"
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         ))}
