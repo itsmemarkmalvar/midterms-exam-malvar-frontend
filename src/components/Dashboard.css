@@ -6,11 +6,13 @@
 
 .sidebar {
   width: 250px;
-  background-color: #3A3F44; /* Sidebar background */
+  background-color: #3A3F44;
   color: white;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transition: width 0.3s;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .sidebar.closed {
@@ -25,10 +27,12 @@
 .sidebar ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .sidebar li {
-  margin-bottom: 10px;
+  margin: 0;
+  padding: 0;
 }
 
 .sidebar button {
@@ -39,14 +43,45 @@
   font-size: 1em;
   cursor: pointer;
   text-align: left;
-  padding: 10px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Reduced transition time */
-  box-sizing: border-box; /* Ensure padding is included in the button's width */
+  padding: 12px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  border-radius: 4px;
+  z-index: 1;
 }
 
-.sidebar button:hover {
-  background-color: Crimson; /* Button hover color */
-  box-shadow: 0 0 8px rgba(220, 20, 60, 0.6); /* Softer glow effect */
+.sidebar button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: Crimson;
+  border-radius: 4px;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar button:hover::before {
+  opacity: 1;
+}
+
+.sidebar button:active,
+.sidebar button:focus {
+  transform: none;
+  background-color: Crimson;
+  outline: none;
+}
+
+.sidebar button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .main-content {
