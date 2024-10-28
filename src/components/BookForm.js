@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import './BookForm.css';
 
-const BookForm = ({ bookId }) => {
+const BookForm = ({ bookId, onClose }) => {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -85,7 +88,9 @@ const BookForm = ({ bookId }) => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">{bookId ? 'Update Book' : 'Add Book'}</button>
+        <div className="button-group">
+          <button type="submit">{bookId ? 'Update Book' : 'Add Book'}</button>
+        </div>
       </form>
     </div>
   );

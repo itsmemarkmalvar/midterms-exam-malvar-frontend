@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faBook, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faBook, faBars, faEdit } from '@fortawesome/free-solid-svg-icons';
 import BookList from './BookList';
 import BookForm from './BookForm';
-import ResponsiveModal from './ResponsiveModal';
+import EditBookList from './EditBookList';
+import EditBookModal from './EditBookModal'; // Import the new modal component
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [showBookForm, setShowBookForm] = useState(false);
-  const [showHome, setShowHome] = useState(true); // State to show/hide BookList
+  const [showHome, setShowHome] = useState(true);
+  const [showEditBook, setShowEditBook] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState(null);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setModalVisible(true);
-      } else {
-        setModalVisible(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Check initial size
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const handleEditBook = (id) => {
+    setSelectedBookId(id);
+    setEditModalVisible(true);
+  };
 
   return (
     <div className="dashboard">
@@ -36,13 +29,18 @@ const Dashboard = () => {
         <h2 className={isSidebarOpen ? '' : 'hidden'}>Navigation</h2>
         <ul>
           <li>
-            <button onClick={() => { setShowHome(true); setShowBookForm(false); }}>
+            <button onClick={() => { setShowHome(true); setShowBookForm(false); setShowEditBook(false); }}>
               <FontAwesomeIcon icon={faHome} /> {isSidebarOpen && 'Home'}
             </button>
           </li>
           <li>
-            <button onClick={() => { setShowBookForm(true); setShowHome(false); }}>
+            <button onClick={() => { setShowBookForm(true); setShowHome(false); setShowEditBook(false); }}>
               <FontAwesomeIcon icon={faBook} /> {isSidebarOpen && 'Add New Book'}
+            </button>
+          </li>
+          <li>
+            <button onClick={() => { setShowEditBook(true); setShowHome(false); setShowBookForm(false); }}>
+              <FontAwesomeIcon icon={faEdit} /> {isSidebarOpen && 'Edit Book'}
             </button>
           </li>
         </ul>
@@ -53,18 +51,23 @@ const Dashboard = () => {
         </header>
         <div className="dashboard-content">
           <div className="dashboard-section">
-            {showBookForm ? (
-              <BookForm />
-            ) : (
+            {showBookForm && <BookForm />}
+            {showHome && (
               <>
                 <h2>Book List</h2>
                 <BookList />
               </>
             )}
+            {showEditBook && (
+              <>
+                <h2>Edit Book</h2>
+                <EditBookList onSelectBook={handleEditBook} />
+              </>
+            )}
           </div>
         </div>
       </main>
-      <ResponsiveModal isVisible={isModalVisible} onClose={() => setModalVisible(false)} />
+      <EditBookModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} bookId={selectedBookId} />
     </div>
   );
 };

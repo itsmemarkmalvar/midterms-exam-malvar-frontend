@@ -19,6 +19,7 @@
 
 .sidebar h2 {
   margin-bottom: 20px;
+  color: crimson;
 }
 
 .sidebar ul {
@@ -39,12 +40,13 @@
   cursor: pointer;
   text-align: left;
   padding: 10px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Reduced transition time */
   box-sizing: border-box; /* Ensure padding is included in the button's width */
 }
 
 .sidebar button:hover {
   background-color: Crimson; /* Button hover color */
+  box-shadow: 0 0 8px rgba(220, 20, 60, 0.6); /* Softer glow effect */
 }
 
 .main-content {
