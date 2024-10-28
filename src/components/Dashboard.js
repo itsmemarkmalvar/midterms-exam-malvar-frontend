@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faBook, faBars } from '@fortawesome/free-solid-svg-icons';
 import BookList from './BookList';
 import BookForm from './BookForm';
 import ResponsiveModal from './ResponsiveModal';
@@ -6,6 +8,9 @@ import './Dashboard.css';
 
 const Dashboard = () => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [showBookForm, setShowBookForm] = useState(false);
+  const [showHome, setShowHome] = useState(true); // State to show/hide BookList
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,11 +29,22 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <aside className="sidebar">
-        <h2>Navigation</h2>
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+        <button className="toggle-button" onClick={() => setSidebarOpen(!isSidebarOpen)}>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
+        <h2 className={isSidebarOpen ? '' : 'hidden'}>Navigation</h2>
         <ul>
-          <li><button>Home</button></li>
-          <li><button>Add Book</button></li>
+          <li>
+            <button onClick={() => { setShowHome(true); setShowBookForm(false); }}>
+              <FontAwesomeIcon icon={faHome} /> {isSidebarOpen && 'Home'}
+            </button>
+          </li>
+          <li>
+            <button onClick={() => { setShowBookForm(true); setShowHome(false); }}>
+              <FontAwesomeIcon icon={faBook} /> {isSidebarOpen && 'Add New Book'}
+            </button>
+          </li>
         </ul>
       </aside>
       <main className="main-content">
@@ -37,12 +53,14 @@ const Dashboard = () => {
         </header>
         <div className="dashboard-content">
           <div className="dashboard-section">
-            <h2>Book List</h2>
-            <BookList />
-          </div>
-          <div className="dashboard-section">
-            <h2>Add New Book</h2>
-            <BookForm />
+            {showBookForm ? (
+              <BookForm />
+            ) : (
+              <>
+                <h2>Book List</h2>
+                <BookList />
+              </>
+            )}
           </div>
         </div>
       </main>
