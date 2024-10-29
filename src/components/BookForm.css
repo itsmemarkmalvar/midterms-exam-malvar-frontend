@@ -63,3 +63,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
+@media (max-width: 768px) {
+  .book-form {
+    max-width: 100%;
+    margin: 0 10px;
+  }
+}

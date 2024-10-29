@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchBooks } from '../services/api';
 
 const BookDetails = ({ bookId }) => {
   const [book, setBook] = useState(null);
@@ -7,37 +8,34 @@ const BookDetails = ({ bookId }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Mock data for testing
-    const mockBook = {
-      id: bookId,
-      title: `Book ${bookId}`,
-      author: `Author ${bookId}`,
-      isbn: `ISBN-${bookId}`,
-      publishedYear: 2020 + bookId,
-      description: `Description for Book ${bookId}`,
+    const getBook = async () => {
+      try {
+        const response = await fetchBooks();
+        const foundBook = response.data.find(b => b.id === bookId);
+        setBook(foundBook);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching book:', err);
+        setLoading(false);
+      }
     };
-    setBook(mockBook);
-    setLoading(false);
+
+    getBook();
   }, [bookId]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!book) {
-    return <div>Book not found</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!book) return <div>Book not found</div>;
 
   return (
     <div className="book-details">
-      <h2>{book?.title}</h2>
+      <h2>{book.title}</h2>
       <div className="book-info">
-        <p><strong>Author:</strong> {book?.author}</p>
-        <p><strong>ISBN:</strong> {book?.isbn}</p>
-        <p><strong>Published Year:</strong> {book?.publishedYear}</p>
+        <p><strong>Author:</strong> {book.author}</p>
+        <p><strong>ISBN:</strong> {book.isbn}</p>
+        <p><strong>Published Year:</strong> {book.published_year}</p>
         <div className="book-description">
           <h3>Description</h3>
-          <p>{book?.description}</p>
+          <p>{book.description}</p>
         </div>
       </div>
       <div className="book-actions">

@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
+import { fetchBooks } from '../services/api';
 
 const EditBookList = ({ onSelectBook }) => {
   const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const mockBooks = [
-      { id: 1, title: 'Book One', author: 'Author One', publishedYear: 2021, genre: 'Fiction', description: 'A fascinating tale.' },
-      { id: 2, title: 'Book Two', author: 'Author Two', publishedYear: 2020, genre: 'Non-Fiction', description: 'An insightful read.' },
-    ];
-    setBooks(mockBooks);
+    const getBooks = async () => {
+      try {
+        const response = await fetchBooks();
+        setBooks(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch books');
+        setLoading(false);
+      }
+    };
+
+    getBooks();
   }, []);
 
   const handleDelete = (id) => {
     // TODO: Implement delete functionality
     console.log('Delete book with id:', id);
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <table className="book-table">
@@ -23,7 +36,6 @@ const EditBookList = ({ onSelectBook }) => {
           <th>Title</th>
           <th>Author</th>
           <th>Published Year</th>
-          <th>Genre</th>
           <th>Description</th>
           <th style={{ width: '200px' }}>Actions</th>
         </tr>
@@ -31,11 +43,10 @@ const EditBookList = ({ onSelectBook }) => {
       <tbody>
         {books.map((book) => (
           <tr key={book.id}>
-            <td style={{ fontSize: '14px' }}>{book.title}</td>
-            <td style={{ fontSize: '14px' }}>{book.author}</td>
-            <td style={{ fontSize: '14px' }}>{book.publishedYear}</td>
-            <td style={{ fontSize: '14px' }}>{book.genre}</td>
-            <td style={{ fontSize: '14px' }}>{book.description}</td>
+            <td>{book.title}</td>
+            <td>{book.author}</td>
+            <td>{book.published_year}</td>
+            <td>{book.description}</td>
             <td>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 <button 
