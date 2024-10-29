@@ -1,35 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { getBook, updateBook } from '../services/api';
 import './EditBookModal.css';
 
 const EditBookModal = ({ isVisible, onClose, bookId }) => {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    publishedYear: '',
+    published_year: '',
     genre: '',
     description: ''
   });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (bookId) {
-      // Mock data for editing
-      const mockBook = {
-        title: `Book ${bookId}`,
-        author: `Author ${bookId}`,
-        publishedYear: 2020 + bookId,
-        genre: `Genre ${bookId}`,
-        description: `Description for Book ${bookId}`,
-      };
-      setFormData(mockBook);
-    }
+    const fetchBook = async () => {
+      if (bookId) {
+        try {
+          const response = await getBook(bookId);
+          setFormData(response.data);
+          setLoading(false);
+        } catch (err) {
+          setError('Failed to fetch book details');
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchBook();
   }, [bookId]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement update functionality
-    onClose();
+    
+    // Add client-side validation
+    if (formData.published_year < 1800 || formData.published_year > new Date().getFullYear() + 1) {
+      setError('Published year must be between 1800 and ' + (new Date().getFullYear() + 1));
+      return;
+    }
+
+    try {
+      await updateBook(bookId, formData);
+      onClose();
+      window.location.reload();
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || 
+        err.response?.data?.message || 
+        'Failed to update book';
+      setError(errorMessage);
+      console.error('Update error:', err);
+    }
   };
 
   const handleChange = (e) => {
@@ -40,11 +60,13 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
   };
 
   if (!isVisible) return null;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="edit-book-modal-overlay">
       <div className="edit-book-modal-content">
         <h2>Edit Book</h2>
+        {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Title:</label>
@@ -70,9 +92,10 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
             <label>Published Year:</label>
             <input
               type="number"
-              name="publishedYear"
-              value={formData.publishedYear}
+              name="published_year"
+              value={formData.published_year}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="form-group">
@@ -82,6 +105,7 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="genre"
               value={formData.genre}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="form-group">
@@ -90,12 +114,16 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="description"
               value={formData.description}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="button-group">
-            <button type="button" onClick={onClose} className="close-button">Close
+            <button type="button" onClick={onClose} className="close-button">
+              Close
             </button>
-            <button type="submit" className="save-button">Update Book</button>
+            <button type="submit" className="save-button">
+              Update Book
+            </button>
           </div>
         </form>
       </div>

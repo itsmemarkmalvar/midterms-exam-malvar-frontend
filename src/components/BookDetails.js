@@ -6,16 +6,21 @@ const BookDetails = ({ bookId }) => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getBook = async () => {
       try {
         const response = await fetchBooks();
         const foundBook = response.data.find(b => b.id === bookId);
+        if (!foundBook) {
+          throw new Error('Book not found');
+        }
         setBook(foundBook);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching book:', err);
+        setError(err.message || 'Failed to fetch book details');
         setLoading(false);
       }
     };

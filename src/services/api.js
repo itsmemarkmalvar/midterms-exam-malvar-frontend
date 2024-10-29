@@ -10,20 +10,23 @@ const api = axios.create({
   withCredentials: true
 });
 
-// Add response interceptor for error handling
-api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response) {
-      console.error('API Error:', error.response.data);
-    } else if (error.request) {
-      console.error('Network Error:', error.message);
-    } else {
-      console.error('Error:', error.message);
-    }
-    return Promise.reject(error);
+// Add request interceptor to fetch CSRF token before each request
+api.interceptors.request.use(async config => {
+  // Get CSRF cookie first
+  await axios.get('http://localhost:8000/sanctum/csrf-cookie');
+  
+  // Get the XSRF token from cookie
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')[1];
+
+  if (token) {
+    config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
   }
-);
+  
+  return config;
+});
 
 export const fetchBooks = () => api.get('/api/books');
 export const getBook = (id) => api.get(`/api/books/${id}`);

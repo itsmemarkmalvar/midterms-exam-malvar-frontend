@@ -1,35 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { createBook } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import './BookForm.css';
 
-const BookForm = ({ bookId, onClose }) => {
+const BookForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    publishedYear: '',
+    published_year: '',
     genre: '',
     description: ''
   });
 
-  useEffect(() => {
-    if (bookId) {
-      // Mock data for editing
-      const mockBook = {
-        title: `Book ${bookId}`,
-        author: `Author ${bookId}`,
-        publishedYear: 2020 + bookId,
-        genre: `Genre ${bookId}`,
-        description: `Description for Book ${bookId}`,
-      };
-      setFormData(mockBook);
-    }
-  }, [bookId]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: Implement create/update functionality
-  };
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -38,9 +23,33 @@ const BookForm = ({ bookId, onClose }) => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createBook(formData);
+      setSuccess(true);
+      setError(null);
+      // Reset form after successful submission
+      setFormData({
+        title: '',
+        author: '',
+        published_year: '',
+        genre: '',
+        description: ''
+      });
+      // Optional: Close form or show success message
+      if (onClose) onClose();
+    } catch (err) {
+      setError('Failed to add book. Please try again.');
+      setSuccess(false);
+    }
+  };
+
   return (
     <div className="book-form">
-      <h2>{bookId ? 'Edit Book' : 'Add New Book'}</h2>
+      <h2>Add New Book</h2>
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">Book added successfully!</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Title:</label>
@@ -66,9 +75,10 @@ const BookForm = ({ bookId, onClose }) => {
           <label>Published Year:</label>
           <input
             type="number"
-            name="publishedYear"
-            value={formData.publishedYear}
+            name="published_year"
+            value={formData.published_year}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="form-group">
@@ -78,6 +88,7 @@ const BookForm = ({ bookId, onClose }) => {
             name="genre"
             value={formData.genre}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="form-group">
@@ -86,10 +97,11 @@ const BookForm = ({ bookId, onClose }) => {
             name="description"
             value={formData.description}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="button-group">
-          <button type="submit">{bookId ? 'Update Book' : 'Add Book'}</button>
+          <button type="submit">Add Book</button>
         </div>
       </form>
     </div>

@@ -234,3 +234,8 @@ button:hover {
   max-height: calc(100vh - 100px);
   overflow-y: auto;
 }
+
+.book-row:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
