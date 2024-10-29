@@ -62,7 +62,11 @@ const EditBookList = ({ onSelectBook }) => {
     setDeleteModal({ isVisible: false, bookId: null, bookTitle: '' });
   };
 
-  const handleRowClick = (book) => {
+  const handleRowClick = (event, book) => {
+    if (event.target.tagName === 'BUTTON') {
+      return;
+    }
+    
     setDetailsModal({
       isVisible: true,
       book: book
@@ -95,7 +99,7 @@ const EditBookList = ({ onSelectBook }) => {
           {books.map((book) => (
             <tr 
               key={book.id}
-              onClick={() => handleRowClick(book)}
+              onClick={(e) => handleRowClick(e, book)}
               style={{ cursor: 'pointer' }}
               className="book-row"
             >

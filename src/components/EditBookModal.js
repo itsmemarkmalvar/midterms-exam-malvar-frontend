@@ -11,17 +11,18 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
     description: ''
   });
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBook = async () => {
       if (bookId) {
+        setLoading(true);
         try {
           const response = await getBook(bookId);
           setFormData(response.data);
-          setLoading(false);
         } catch (err) {
           setError('Failed to fetch book details');
+        } finally {
           setLoading(false);
         }
       }
