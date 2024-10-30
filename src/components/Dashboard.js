@@ -52,7 +52,7 @@ const Dashboard = () => {
         <button className="toggle-button" onClick={() => setSidebarOpen(!isSidebarOpen)}>
           <FontAwesomeIcon icon={faBars} />
         </button>
-        <h2 className={isSidebarOpen ? '' : 'hidden'}>TEST</h2>
+        <h2 className={isSidebarOpen ? '' : 'hidden'}>Navigation</h2>
         <ul>
           <li>
             <button onClick={() => setCurrentView('home')}>
