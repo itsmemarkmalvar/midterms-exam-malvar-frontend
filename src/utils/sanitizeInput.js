@@ -4,7 +4,7 @@ const sanitizeInput = {
     // Only remove HTML tags and dangerous characters, preserve spaces
     return value
       .replace(/<[^>]*>/g, '')
-      .replace(/[<>]/g, '');
+      .replace(/[<>]/g, ''); 
   },
   
   number: (value) => {

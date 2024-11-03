@@ -24,6 +24,11 @@
   position: relative;
 }
 
+.edit-book-modal-content .spinner-container {
+  min-height: unset;
+  padding: 0;
+}
+
 .close-button {
   background: Crimson;
   border: none;
@@ -120,5 +125,18 @@ form {
   font-size: 14px;
   margin-top: 8px;
   text-align: center;
+}
+
+.modal-inner {
+  width: 100%;
+  height: 100%;
+}
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  width: 100%;
 }
   

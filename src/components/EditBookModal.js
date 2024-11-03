@@ -122,82 +122,91 @@ const EditBookModal = ({ isVisible, onClose, bookId, onSuccess }) => {
   };
 
   if (!isVisible) return null;
-  if (loading) return <Spinner />;
 
   return (
     <div className="edit-book-modal-overlay">
       <div className="edit-book-modal-content">
-        <h2>Edit Book</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Title:</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className={errors.title ? 'error-input' : ''}
-              required
-            />
-            {errors.title && <span className="error-message">{errors.title}</span>}
-          </div>
-          <div className="form-group">
-            <label>Author:</label>
-            <input
-              type="text"
-              name="author"
-              value={formData.author}
-              onChange={handleChange}
-              className={errors.author ? 'error-input' : ''}
-              required
-            />
-            {errors.author && <span className="error-message">{errors.author}</span>}
-          </div>
-          <div className="form-group">
-            <label>Published Year:</label>
-            <input
-              type="number"
-              name="published_year"
-              value={formData.published_year}
-              onChange={handleChange}
-              className={errors.published_year ? 'error-input' : ''}
-              required
-            />
-            {errors.published_year && <span className="error-message">{errors.published_year}</span>}
-          </div>
-          <div className="form-group">
-            <label>Genre:</label>
-            <input
-              type="text"
-              name="genre"
-              value={formData.genre}
-              onChange={handleChange}
-              className={errors.genre ? 'error-input' : ''}
-              required
-            />
-            {errors.genre && <span className="error-message">{errors.genre}</span>}
-          </div>
-          <div className="form-group">
-            <label>Description:</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className={errors.description ? 'error-input' : ''}
-              required
-            />
-            {errors.description && <span className="error-message">{errors.description}</span>}
-          </div>
-          <div className="button-group">
-            <button type="button" onClick={onClose} className="close-button">
-              Close
-            </button>
-            <button type="submit" className="save-button">
-              Update Book
-            </button>
-          </div>
-        </form>
+        <div className="modal-inner">
+          {loading ? (
+            <div className="spinner-wrapper">
+              <Spinner size="medium" />
+            </div>
+          ) : (
+            <>
+              <h2>Edit Book</h2>
+              {error && <div className="error-message">{error}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label>Title:</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className={errors.title ? 'error-input' : ''}
+                    required
+                  />
+                  {errors.title && <span className="error-message">{errors.title}</span>}
+                </div>
+                <div className="form-group">
+                  <label>Author:</label>
+                  <input
+                    type="text"
+                    name="author"
+                    value={formData.author}
+                    onChange={handleChange}
+                    className={errors.author ? 'error-input' : ''}
+                    required
+                  />
+                  {errors.author && <span className="error-message">{errors.author}</span>}
+                </div>
+                <div className="form-group">
+                  <label>Published Year:</label>
+                  <input
+                    type="number"
+                    name="published_year"
+                    value={formData.published_year}
+                    onChange={handleChange}
+                    className={errors.published_year ? 'error-input' : ''}
+                    required
+                  />
+                  {errors.published_year && <span className="error-message">{errors.published_year}</span>}
+                </div>
+                <div className="form-group">
+                  <label>Genre:</label>
+                  <input
+                    type="text"
+                    name="genre"
+                    value={formData.genre}
+                    onChange={handleChange}
+                    className={errors.genre ? 'error-input' : ''}
+                    required
+                  />
+                  {errors.genre && <span className="error-message">{errors.genre}</span>}
+                </div>
+                <div className="form-group">
+                  <label>Description:</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className={errors.description ? 'error-input' : ''}
+                    required
+                  />
+                  {errors.description && <span className="error-message">{errors.description}</span>}
+                </div>
+                <div className="button-group">
+                  <button type="button" onClick={onClose} className="close-button">
+                    Close
+                  </button>
+                  <button type="submit" className="save-button">
+                    Update Book
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
