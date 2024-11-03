@@ -11,6 +11,7 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
     description: ''
   });
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -34,22 +35,34 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Add client-side validation
-    if (formData.published_year < 1800 || formData.published_year > new Date().getFullYear() + 1) {
-      setError('Published year must be between 1800 and ' + (new Date().getFullYear() + 1));
+    const validationErrors = validateFormData();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
     try {
       await updateBook(bookId, formData);
+      setErrors({});
       onClose();
+      window.dispatchEvent(new CustomEvent('notification', {
+        detail: {
+          message: 'Book updated successfully!',
+          type: 'success'
+        }
+      }));
       window.location.reload();
     } catch (err) {
       const errorMessage = err.response?.data?.error || 
         err.response?.data?.message || 
         'Failed to update book';
       setError(errorMessage);
-      console.error('Update error:', err);
+      window.dispatchEvent(new CustomEvent('notification', {
+        detail: {
+          message: errorMessage,
+          type: 'error'
+        }
+      }));
     }
   };
 
@@ -58,6 +71,46 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const validateFormData = () => {
+    const errors = {};
+    const currentYear = new Date().getFullYear();
+
+    // Title validation
+    if (!formData.title?.trim()) {
+      errors.title = 'Title is required';
+    } else if (formData.title.length > 255) {
+      errors.title = 'Title must be less than 255 characters';
+    }
+
+    // Author validation
+    if (!formData.author?.trim()) {
+      errors.author = 'Author is required';
+    } else if (formData.author.length > 255) {
+      errors.author = 'Author must be less than 255 characters';
+    }
+
+    // Published year validation
+    if (!formData.published_year) {
+      errors.published_year = 'Published year is required';
+    } else if (formData.published_year < 1800 || formData.published_year > currentYear) {
+      errors.published_year = `Published year must be between 1800 and ${currentYear}`;
+    }
+
+    // Genre validation
+    if (!formData.genre?.trim()) {
+      errors.genre = 'Genre is required';
+    } else if (formData.genre.length > 255) {
+      errors.genre = 'Genre must be less than 255 characters';
+    }
+
+    // Description validation
+    if (!formData.description?.trim()) {
+      errors.description = 'Description is required';
+    }
+
+    return errors;
   };
 
   if (!isVisible) return null;
@@ -76,8 +129,10 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="title"
               value={formData.title}
               onChange={handleChange}
+              className={errors.title ? 'error-input' : ''}
               required
             />
+            {errors.title && <span className="error-message">{errors.title}</span>}
           </div>
           <div className="form-group">
             <label>Author:</label>
@@ -86,8 +141,10 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="author"
               value={formData.author}
               onChange={handleChange}
+              className={errors.author ? 'error-input' : ''}
               required
             />
+            {errors.author && <span className="error-message">{errors.author}</span>}
           </div>
           <div className="form-group">
             <label>Published Year:</label>
@@ -96,8 +153,10 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="published_year"
               value={formData.published_year}
               onChange={handleChange}
+              className={errors.published_year ? 'error-input' : ''}
               required
             />
+            {errors.published_year && <span className="error-message">{errors.published_year}</span>}
           </div>
           <div className="form-group">
             <label>Genre:</label>
@@ -106,8 +165,10 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="genre"
               value={formData.genre}
               onChange={handleChange}
+              className={errors.genre ? 'error-input' : ''}
               required
             />
+            {errors.genre && <span className="error-message">{errors.genre}</span>}
           </div>
           <div className="form-group">
             <label>Description:</label>
@@ -115,8 +176,10 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
               name="description"
               value={formData.description}
               onChange={handleChange}
+              className={errors.description ? 'error-input' : ''}
               required
             />
+            {errors.description && <span className="error-message">{errors.description}</span>}
           </div>
           <div className="button-group">
             <button type="button" onClick={onClose} className="close-button">

@@ -28,6 +28,29 @@ api.interceptors.request.use(async config => {
   return config;
 });
 
+api.interceptors.response.use(
+  response => response,
+  error => {
+    const errorMessage = error.response?.data?.error 
+      || error.response?.data?.message 
+      || 'An unexpected error occurred';
+      
+    // Handle validation errors
+    if (error.response?.status === 422) {
+      const validationErrors = error.response.data.errors;
+      const formattedErrors = Object.keys(validationErrors).reduce((acc, key) => {
+        acc[key] = validationErrors[key][0];
+        return acc;
+      }, {});
+      
+      error.validationErrors = formattedErrors;
+    }
+    
+    error.userMessage = errorMessage;
+    return Promise.reject(error);
+  }
+);
+
 export const fetchBooks = () => api.get('/api/books');
 export const getBook = (id) => api.get(`/api/books/${id}`);
 export const createBook = (data) => api.post('/api/books', data);
