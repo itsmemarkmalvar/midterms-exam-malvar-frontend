@@ -1,0 +1,36 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.pagination-button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: crimson;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: crimson;
+  color: white;
+  border-color: crimson;
+}
+
+.pagination-button.active {
+  background-color: crimson;
+  color: white;
+  border-color: crimson;
+}
+
+.pagination-button:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+} 

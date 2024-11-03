@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getBook, updateBook } from '../services/api';
 import './EditBookModal.css';
+import Spinner from './Spinner';
 
 const EditBookModal = ({ isVisible, onClose, bookId, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -113,7 +114,7 @@ const EditBookModal = ({ isVisible, onClose, bookId, onSuccess }) => {
   };
 
   if (!isVisible) return null;
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spinner />;
 
   return (
     <div className="edit-book-modal-overlay">

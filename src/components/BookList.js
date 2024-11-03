@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBooks } from '../services/api';
 import BookDetailsModal from './BookDetailsModal';
+import Spinner from './Spinner';
+import Pagination from './Pagination';
 import './Books.css';
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [booksPerPage] = useState(10);
   const [detailsModal, setDetailsModal] = useState({
     isVisible: false,
     book: null
@@ -41,7 +45,17 @@ const BookList = () => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  // Calculate pagination
+  const indexOfLastBook = currentPage * booksPerPage;
+  const indexOfFirstBook = indexOfLastBook - booksPerPage;
+  const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
+  const totalPages = Math.ceil(books.length / booksPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  if (loading) return <Spinner size="large" />;
   if (error) return <div className="error-message">{error}</div>;
 
   return (
@@ -57,7 +71,7 @@ const BookList = () => {
           </tr>
         </thead>
         <tbody>
-          {books.map((book) => (
+          {currentBooks.map((book) => (
             <tr 
               key={book.id}
               onClick={() => handleRowClick(book)}
@@ -73,6 +87,12 @@ const BookList = () => {
           ))}
         </tbody>
       </table>
+
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       <BookDetailsModal
         isVisible={detailsModal.isVisible}

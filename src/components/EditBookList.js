@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { fetchBooks, deleteBook } from '../services/api';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import BookDetailsModal from './BookDetailsModal';
+import Spinner from './Spinner';
+import Pagination from './Pagination';
 
 const EditBookList = ({ onSelectBook }) => {
   const [books, setBooks] = useState([]);
@@ -16,6 +18,17 @@ const EditBookList = ({ onSelectBook }) => {
     isVisible: false,
     book: null
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [booksPerPage] = useState(10);
+
+  const indexOfLastBook = currentPage * booksPerPage;
+  const indexOfFirstBook = indexOfLastBook - booksPerPage;
+  const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
+  const totalPages = Math.ceil(books.length / booksPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const fetchBookList = async () => {
     try {
@@ -92,7 +105,7 @@ const EditBookList = ({ onSelectBook }) => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spinner size="large" />;
   if (error) return <div className="error-message">{error}</div>;
 
   return (
@@ -108,7 +121,7 @@ const EditBookList = ({ onSelectBook }) => {
           </tr>
         </thead>
         <tbody>
-          {books.map((book) => (
+          {currentBooks.map((book) => (
             <tr 
               key={book.id}
               onClick={(e) => handleRowClick(e, book)}
@@ -139,6 +152,12 @@ const EditBookList = ({ onSelectBook }) => {
           ))}
         </tbody>
       </table>
+
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       <DeleteConfirmationModal
         isVisible={deleteModal.isVisible}
