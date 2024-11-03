@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getBook, updateBook } from '../services/api';
 import './EditBookModal.css';
 
-const EditBookModal = ({ isVisible, onClose, bookId }) => {
+const EditBookModal = ({ isVisible, onClose, bookId, onSuccess }) => {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -44,14 +44,13 @@ const EditBookModal = ({ isVisible, onClose, bookId }) => {
     try {
       await updateBook(bookId, formData);
       setErrors({});
-      onClose();
       window.dispatchEvent(new CustomEvent('notification', {
         detail: {
           message: 'Book updated successfully!',
           type: 'success'
         }
       }));
-      window.location.reload();
+      onSuccess();
     } catch (err) {
       const errorMessage = err.response?.data?.error || 
         err.response?.data?.message || 

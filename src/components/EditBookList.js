@@ -44,6 +44,12 @@ const EditBookList = ({ onSelectBook }) => {
     try {
       const response = await deleteBook(deleteModal.bookId);
       if (response.status === 204) {
+        window.dispatchEvent(new CustomEvent('notification', {
+          detail: {
+            message: `"${deleteModal.bookTitle}" has been deleted successfully!`,
+            type: 'success'
+          }
+        }));
         setDeleteModal({ isVisible: false, bookId: null, bookTitle: '' });
         fetchBookList();
       } else {
@@ -54,6 +60,12 @@ const EditBookList = ({ onSelectBook }) => {
         err.response?.data?.message || 
         'Failed to delete book';
       setError(errorMessage);
+      window.dispatchEvent(new CustomEvent('notification', {
+        detail: {
+          message: errorMessage,
+          type: 'error'
+        }
+      }));
       console.error('Delete error:', err);
     }
   };

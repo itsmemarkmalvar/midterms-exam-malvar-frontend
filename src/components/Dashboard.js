@@ -13,6 +13,11 @@ const Dashboard = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [currentView, setCurrentView] = useState('home');
   const [selectedBookId, setSelectedBookId] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   const handleEditBook = (id) => {
     setSelectedBookId(id);
@@ -25,20 +30,23 @@ const Dashboard = () => {
         return (
           <div key="home">
             <h2>Book List</h2>
-            <BookList />
+            <BookList key={refreshTrigger} />
           </div>
         );
       case 'add':
         return (
           <div key="add">
-            <BookForm />
+            <BookForm onSuccess={() => {
+              handleRefresh();
+              setCurrentView('home');
+            }} />
           </div>
         );
       case 'edit':
         return (
           <div key="edit">
             <h2>Edit Book</h2>
-            <EditBookList onSelectBook={handleEditBook} />
+            <EditBookList key={refreshTrigger} onSelectBook={handleEditBook} />
           </div>
         );
       default:
@@ -92,7 +100,11 @@ const Dashboard = () => {
       <EditBookModal 
         isVisible={isEditModalVisible} 
         onClose={() => setEditModalVisible(false)} 
-        bookId={selectedBookId} 
+        bookId={selectedBookId}
+        onSuccess={() => {
+          handleRefresh();
+          setEditModalVisible(false);
+        }}
       />
     </div>
   );
