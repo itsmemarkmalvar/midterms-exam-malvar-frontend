@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getBook, updateBook } from '../services/api';
 import './EditBookModal.css';
 import Spinner from './Spinner';
+import sanitizeInput from '../utils/sanitizeInput';
 
 const EditBookModal = ({ isVisible, onClose, bookId, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -67,9 +68,16 @@ const EditBookModal = ({ isVisible, onClose, bookId, onSuccess }) => {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    const sanitizedValue = name === 'published_year' 
+      ? sanitizeInput.number(value)
+      : name === 'description'
+      ? sanitizeInput.description(value)
+      : sanitizeInput.text(value);
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: sanitizedValue
     });
   };
 

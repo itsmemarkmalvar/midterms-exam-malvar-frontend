@@ -3,6 +3,7 @@ import { createBook } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import './BookForm.css';
+import sanitizeInput from '../utils/sanitizeInput';
 
 const BookForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
@@ -18,9 +19,16 @@ const BookForm = ({ onClose }) => {
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    const sanitizedValue = name === 'published_year' 
+      ? sanitizeInput.number(value)
+      : name === 'description'
+      ? sanitizeInput.description(value)
+      : sanitizeInput.text(value);
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: sanitizedValue
     });
   };
 
